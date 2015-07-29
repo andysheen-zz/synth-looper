@@ -1,0 +1,232 @@
+<!doctype html5>
+<html>
+<head>
+	<title>sup</title>
+	<link rel="stylesheet" href="./css/normalize.css">
+	<link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+	<header id="header">
+		<a id="logo" href="http://www.techwillsaveus.com">
+			<img src="./img/logo.svg" alt="Technology Will Save Us" />
+		</a>
+
+		<div id="tempo" class="cf">
+			<div id="tempo-label">
+				Tempo:
+				<span id="tempo-value">120</span>
+			</div>
+			<input id="tempo-slider" type="range" min="60" max="180" value="120" />
+		</div>
+
+		<a id="play"></a>
+		<a id="metronome" href=""></a>
+
+		<div id="header-buttons">
+			<a href="#" class="header-button">Download</a>
+			<a href="#" class="header-button sc">Share to Soundcloud</a>
+		</div>
+	</header>
+
+	<section id="tracks">
+		<!-- Track 1 -->
+		<section class="track-wrapper">
+			<section id="track1" class="track t1 empty">
+				<svg class="track-svg">
+					<circle class="track-svg-circle track-svg-bg"></circle>
+
+					<g class="track-svg-rec">
+						<circle class="track-svg-rec-bg-start"></circle>
+						<circle class="track-svg-circle track-svg-rec-bg"></circle>
+						<circle class="track-svg-rec-bg-end"></circle>
+
+						<circle class="track-svg-rec-icon"></circle>
+					</g>   
+
+					<path class="track-svg-play" d="M210,105 C210,162.989899 162.989899,210 105,210 C47.0101013,210 0,162.989899 0,105 C0,47.0101013 47.0101013,0 105,0 C113.284271,0 120,6.71572875 120,15 C120,23.2842712 113.284271,30 105,30 C80.1471863,30 30,50 30,105 C30,160 80.1471863,180 105,180 C129.852814,180 180,159.5 180,105 C180,96.7157288 186.715729,90 195,90 C203.284271,90 210,96.7157288 210,105 Z"></path>
+		    
+		    		<g class="track-svg-beats">
+		    			<circle class="track-svg-beat b1"></circle>
+		    			<circle class="track-svg-beat b2"></circle>
+		    			<circle class="track-svg-beat b3"></circle>
+		    			<circle class="track-svg-beat b4"></circle>
+		    		</g>
+				</svg>
+
+				<div class="track-elements">
+					<a href="" class="track-rec-button"></a>
+					<a href="" class="track-play-button"></a>
+					<a href="" class="track-stop-button"></a>
+					<a href="" class="track-delete-button"></a>
+
+					<div class="track-count"></div>
+				</div>
+
+				<section class="track-controls">
+					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<select class="track-effect">
+						<option selected="selected">No effect</option>
+						<option>Effect 1</option>
+						<option>Effect 2</option>
+						<option>Effect 3</option>
+
+					</select>
+				</section>
+			</section><!-- end of .track -->
+		</section><!-- end of .track-wrapper -->
+
+		<!-- Track 2 -->
+		<section class="track-wrapper">
+			<section id="track2" class="track t2 empty">
+				<svg class="track-svg">
+					<circle class="track-svg-circle track-svg-bg"></circle>
+
+					<g class="track-svg-rec">
+						<circle class="track-svg-rec-bg-start"></circle>
+						<circle class="track-svg-circle track-svg-rec-bg"></circle>
+						<circle class="track-svg-rec-bg-end"></circle>
+
+						<circle class="track-svg-rec-icon"></circle>
+					</g>  
+
+					<path class="track-svg-play" d="M210,105 C210,162.989899 162.989899,210 105,210 C47.0101013,210 0,162.989899 0,105 C0,47.0101013 47.0101013,0 105,0 C113.284271,0 120,6.71572875 120,15 C120,23.2842712 113.284271,30 105,30 C80.1471863,30 30,50 30,105 C30,160 80.1471863,180 105,180 C129.852814,180 180,159.5 180,105 C180,96.7157288 186.715729,90 195,90 C203.284271,90 210,96.7157288 210,105 Z"></path>
+		    
+		    		<g class="track-svg-beats">
+		    			<circle class="track-svg-beat b1"></circle>
+		    			<circle class="track-svg-beat b2"></circle>
+		    			<circle class="track-svg-beat b3"></circle>
+		    			<circle class="track-svg-beat b4"></circle>
+		    		</g>
+				</svg>
+
+				<div class="track-elements">
+					<a href="" class="track-rec-button"></a>
+					<a href="" class="track-play-button"></a>
+					<a href="" class="track-stop-button"></a>
+					<a href="" class="track-delete-button"></a>
+
+					<div class="track-count"></div>
+				</div>
+
+				<section class="track-controls">
+					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<select class="track-effect">
+						<option selected="selected">No effect</option>
+						<option>Effect 1</option>
+						<option>Effect 2</option>
+						<option>Effect 3</option>
+
+					</select>
+				</section>
+			</section><!-- end of .track -->
+		</section><!-- end of .track-wrapper -->
+
+		<!-- Track 3 -->
+		<section class="track-wrapper">
+			<section id="track3" class="track t3 empty">
+				<svg class="track-svg">
+					<circle class="track-svg-circle track-svg-bg"></circle>
+
+					<g class="track-svg-rec">
+						<circle class="track-svg-rec-bg-start"></circle>
+						<circle class="track-svg-circle track-svg-rec-bg"></circle>
+						<circle class="track-svg-rec-bg-end"></circle>
+
+						<circle class="track-svg-rec-icon"></circle>
+					</g>
+
+					<path class="track-svg-play" d="M210,105 C210,162.989899 162.989899,210 105,210 C47.0101013,210 0,162.989899 0,105 C0,47.0101013 47.0101013,0 105,0 C113.284271,0 120,6.71572875 120,15 C120,23.2842712 113.284271,30 105,30 C80.1471863,30 30,50 30,105 C30,160 80.1471863,180 105,180 C129.852814,180 180,159.5 180,105 C180,96.7157288 186.715729,90 195,90 C203.284271,90 210,96.7157288 210,105 Z"></path>
+		    
+		    		<g class="track-svg-beats">
+		    			<circle class="track-svg-beat b1"></circle>
+		    			<circle class="track-svg-beat b2"></circle>
+		    			<circle class="track-svg-beat b3"></circle>
+		    			<circle class="track-svg-beat b4"></circle>
+		    		</g>
+				</svg>
+
+				<div class="track-elements">
+					<a href="" class="track-rec-button"></a>
+					<a href="" class="track-play-button"></a>
+					<a href="" class="track-stop-button"></a>
+					<a href="" class="track-delete-button"></a>
+
+					<div class="track-count"></div>
+				</div>
+
+				<section class="track-controls">
+					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<select class="track-effect">
+						<option selected="selected">No effect</option>
+						<option>Effect 1</option>
+						<option>Effect 2</option>
+						<option>Effect 3</option>
+
+					</select>
+				</section>
+			</section><!-- end of .track -->
+		</section><!-- end of .track-wrapper -->
+
+		<!-- Track 4 -->
+		<section class="track-wrapper">
+			<section id="track4" class="track t4 empty">
+				<svg class="track-svg">
+					<circle class="track-svg-circle track-svg-bg"></circle>
+
+					<g class="track-svg-rec">
+						<circle class="track-svg-rec-bg-start"></circle>
+						<circle class="track-svg-circle track-svg-rec-bg"></circle>
+						<circle class="track-svg-rec-bg-end"></circle>
+
+						<circle class="track-svg-rec-icon"></circle>
+					</g>
+
+					<path class="track-svg-play" d="M210,105 C210,162.989899 162.989899,210 105,210 C47.0101013,210 0,162.989899 0,105 C0,47.0101013 47.0101013,0 105,0 C113.284271,0 120,6.71572875 120,15 C120,23.2842712 113.284271,30 105,30 C80.1471863,30 30,50 30,105 C30,160 80.1471863,180 105,180 C129.852814,180 180,159.5 180,105 C180,96.7157288 186.715729,90 195,90 C203.284271,90 210,96.7157288 210,105 Z"></path>   
+		    
+		    		<g class="track-svg-beats">
+		    			<circle class="track-svg-beat b1"></circle>
+		    			<circle class="track-svg-beat b2"></circle>
+		    			<circle class="track-svg-beat b3"></circle>
+		    			<circle class="track-svg-beat b4"></circle>
+		    		</g>
+				</svg>
+
+				<div class="track-elements">
+					<a href="" class="track-rec-button"></a>
+					<a href="" class="track-play-button"></a>
+					<a href="" class="track-stop-button"></a>
+					<a href="" class="track-delete-button"></a>
+
+					<div class="track-count"></div>
+				</div>
+
+				<section class="track-controls">
+					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<select class="track-effect">
+						<option selected="selected">No effect</option>
+						<option>Effect 1</option>
+						<option>Effect 2</option>
+						<option>Effect 3</option>
+
+					</select>
+				</section>
+			</section><!-- end of .track -->
+		</section><!-- end of .track-wrapper -->
+
+
+	</section><!-- end of #tracks -->
+
+	<svg id="defs">
+		<defs>
+	        <linearGradient x1="50%" y1="7.61160714%" x2="78.7853423%" y2="53.5081845%" id="track-play">
+            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+       		</linearGradient>
+	    </defs>
+	</svg>
+	<script src="js/lib/jquery-1.8.2.min.js"></script>
+	<script src="js/lib/recorderjs/recorder.js"></script>
+	<script src="http://cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js"></script>
+	<script type="text/javascript" src="./js/main.js"></script>
+</body>
+</html>

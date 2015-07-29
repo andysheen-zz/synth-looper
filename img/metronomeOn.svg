@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>Metronome Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Metronome-Copy" sketch:type="MSLayerGroup" transform="translate(2.000000, 2.000000)">
+            <circle id="border" stroke="#FFFFFF" stroke-width="2" fill-opacity="0.400000006" fill="#FFFFFF" sketch:type="MSShapeGroup" cx="15" cy="15" r="15"></circle>
+            <g id="icon" transform="translate(8.000000, 6.000000)" sketch:type="MSShapeGroup">
+                <path d="M8.34159474,2.109375 L11.4492227,13.9620536 L2.29069588,13.9620536 L5.44454004,2.109375 L8.3612106,2.109375 L8.34159474,2.109375 Z M9.06556058,0 L4.70750452,0 C4.51356239,0 4.31591772,0.146149554 4.26849005,0.324609375 L0.165027125,15.7468192 C0.117423146,15.925279 0.237314647,16.0714286 0.431256781,16.0714286 L13.3060172,16.0714286 C13.4999593,16.0714286 13.6200271,15.925279 13.5729521,15.7466518 L9.5038698,0.324776786 C9.45679476,0.146149554 9.25950271,0 9.06556058,0 L9.06556058,0 L9.06556058,0 Z" id="Shape" fill="#FFFFFF"></path>
+                <path d="M12.0600357,1.58598438 C12.1139192,1.31218414 12.3638639,1.20605805 12.6148757,1.34992348 L14.3279439,2.33190641 C14.5789557,2.47577185 14.5960276,2.73462832 14.3655557,2.90711488 L13.0528791,3.88808466 C12.8224071,4.06057122 12.4281507,4.08362008 12.177139,3.93975464 L12.1117852,3.90226858 C11.8607735,3.75840314 11.6993898,3.41646944 11.7532733,3.14241592 L12.0600357,1.58598438 L12.0600357,1.58598438 Z" id="Shape" fill="#FFFFFF"></path>
+                <path d="M6.87912749,12.8571429 L13.8185533,1.28571429" id="Shape" stroke="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

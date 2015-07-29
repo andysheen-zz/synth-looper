@@ -1,0 +1,672 @@
+@import url("http://fast.fonts.net/lt/1.css?apiType=css&c=10e25f65-f730-4931-902a-4d99b98b8ddf&fontids=1462119");
+@font-face{
+font-family:"Univers LT W04_55 Roman";
+src:	url("./font/1462119/0c61776b-55be-42d8-b9d7-82ca71cc8ed8.eot?#iefix");
+src:	url("./font/1462119/0c61776b-55be-42d8-b9d7-82ca71cc8ed8.eot?#iefix") format("eot"),
+		url("./font/1462119/b4e40ad5-a27d-4b9c-b14d-6fb11937811a.woff2") format("woff2"),
+		url("./font/1462119/df36d390-32d7-458f-8c59-db5678ce38cd.woff") format("woff"),
+		url("./font/1462119/7bca4e1b-7f1e-49f3-8c42-ef16ca30f540.ttf") format("truetype"),
+		url("./font/1462119/05e967ec-e8a6-40a6-9267-23df78e1c115.svg#05e967ec-e8a6-40a6-9267-23df78e1c115") format("svg");
+}
+
+/*
+ * Main
+ */
+
+body {
+	position: relative;
+	margin: 0;
+	font-family: "Univers LT W04_55 Roman", "HelveticaNeue", Helvetica, sans-serif;
+	font-size: 13px;
+	line-height: 1.538em; /* 20px */
+	background-color: #111111;
+	color: #FFF;
+}
+
+#defs {
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: #999999;
+  border-radius: 2px;
+  
+}
+input[type=range]::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -8px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #a6a6a6;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: #999999;
+  border-radius: 2px;
+}
+input[type=range]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #8c8c8c;
+  border-radius: 4px;
+}
+input[type=range]volume::-ms-fill-upper {
+  background: #999999;
+  border-radius: 4px;
+}
+input[type=range]::-ms-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background: #ffffff;
+  cursor: pointer;
+  height: 4px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #999999;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #a6a6a6;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+
+/*
+ * Header
+ */
+
+#header {
+	position: relative;
+	height: 60px;
+	border-bottom: 1px solid #4D4D4D;
+	margin: 0 10px;
+}
+
+#header > * {
+	display: inline-block;
+}
+
+#logo {
+	padding-top: 10px;
+}
+
+#tempo {
+	position: absolute;
+	left: 50%;
+	margin-left: -240px;
+	width: 190px;
+}
+
+#tempo-label {
+	float: left;
+	width: 50px;
+	margin-top: 15px;
+	line-height: 15px;
+}
+
+#tempo-value {
+	color: #AAA;
+}
+
+#tempo-slider {
+	width: 130px;
+	margin-top: 30px;
+	margin-left: 10px;
+	background-color: inherit;
+	-webkit-appearance: none;
+}
+
+#play {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -22px;
+	margin-top: -22px;
+	width: 44px;
+	height: 44px;
+	background: url('../img/mainPlay.svg') no-repeat;
+}
+
+#play.playing {
+	background-image: url('../img/mainStop.svg');
+}
+
+#metronome {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: 40px;
+	margin-top: -17px;
+	width: 34px;
+	height: 34px;
+	background: url('../img/metronome.svg') no-repeat;
+}
+
+#metronome.on {
+	background-image: url('../img/metronomeOn.svg');
+}
+
+#header-buttons {
+	float: right;
+	margin-top: 10px;
+}
+
+.header-button {
+	display: inline-block;
+	padding: 0 10px;
+	height: 30px;
+	line-height: 30px;
+	border: 2px solid #FFFFFF;
+	border-radius: 30px;
+	opacity: 0.5;
+	transition: opacity 100ms;
+}
+
+.header-button:hover {
+	opacity: 1;
+}
+
+.header-button.sc {
+	padding-right: 45px;
+	background: url('../img/soundcloud.svg') no-repeat 94% 45%;
+}
+
+#tracks {
+	position: absolute;
+	top: 60px;
+	bottom: 0;
+	width: 100%;
+}
+
+.track-wrapper {
+	position: relative;
+	width: 50%;
+	height: 50%;
+	float: left;
+}
+
+
+/*
+ * Track
+ */
+
+.track {
+	position: absolute;
+	top: 50px;
+	left: 50%;
+	margin-left: -110px;
+	width: 210px;
+	/*height: 210px;*/
+}
+
+
+/* Track states */
+
+.track.empty .track-rec-button {
+	display: block;
+}
+
+.track.empty .track-svg-beats {
+	display: none;
+}
+
+.track.rec .track-svg-rec {
+	display: block;
+}
+
+.track.rec .track-svg-rec-bg-end,
+.track.rec .track-svg-rec-bg {
+	animation-play-state: running;
+}
+
+.track.play .track-svg-play {
+	display: block;
+}
+
+.track.count .track-count {
+	display: block;
+}
+
+.track.count .track-count-no {
+	animation-play-state: running;
+}
+
+.track.count .track-svg-play,
+.track.play .track-svg-play {
+	animation-play-state: running;
+}
+
+.track.count .track-svg-play {
+	animation-iteration-count: 1;
+}
+
+.track.play .track-stop-button,
+.track.play .track-delete-button,
+.track.play .track-controls {
+	display: block;
+}
+
+.track.play.stopped .track-svg-play {
+	opacity: 0;
+}
+
+.track.play.stopped .track-stop-button {
+	display: none;
+}
+
+.track.play.stopped .track-play-button {
+	display: block;
+}
+
+/* Elements (buttons, etc) */
+
+.track-elements {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 210px;
+	height: 210px;
+}
+
+.track-play-button {
+	display: none;
+	width: 44px;
+	height: 44px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -22px;
+	margin-left: -22px;
+	background: url('../img/trackPlay.svg') no-repeat;
+}
+
+.track-stop-button {
+	display: none;
+	width: 44px;
+	height: 44px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -22px;
+	margin-left: -22px;
+	background: url('../img/trackStop.svg') no-repeat;
+}
+
+.track-delete-button {
+	display: none;
+	width: 34px;
+	height: 34px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-top: -10px;
+	margin-right: -10px;
+	background: url('../img/trackDelete.svg') no-repeat;
+	opacity: 0.5;
+	transition: opacity 100ms;
+}
+
+.track-delete-button:hover {
+	opacity: 1;
+}
+
+.track-controls {
+	display: none;
+}
+
+.track-volume {
+	width: 210px;
+	margin: 20px 0 0 0;
+	background-color: inherit;
+	-webkit-appearance: none;
+}
+
+.track-volume:before {
+	content: "";
+	position: relative;
+	display: block;
+	width: 20px;
+	height: 20px;
+	margin-top: 5px;
+	margin-right: 10px;
+	background: url('../img/speaker.svg') no-repeat;
+	opacity: 0.7;
+}
+
+
+
+.track-effect {
+	position: relative;
+	width: 90px;
+	height: 30px;
+	margin: 10px 0 0 50%;
+	left: -45px;
+	border-radius: 15px;
+	border: 2px solid #FFFFFF;
+	padding-left: 10px;
+	line-height: 26px;
+	background: transparent url('../img/dropdown.svg') no-repeat 88% 55%;
+	color: #FFFFFF;
+	outline: 0;
+	-webkit-appearance: none;
+	opacity: 0.5;
+}
+
+.track-effect.selected {
+	opacity: 1;	
+}
+
+/* Initial state — unrecorded */
+
+.track-rec-button {
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url('../img/mic.svg') no-repeat 48.5% 52%;
+}
+
+/* Countdown */
+
+.track-count {
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	text-align: center;
+}
+
+.track-count-no {
+	visibility: hidden;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	font-size: 4.3em; /* 56px */
+	line-height: 210px;
+	color: #CCCCCC;
+}
+
+.track-count-no.animate {
+	animation: track-count 0.75s ease-out forwards paused;
+}
+
+@keyframes track-count {
+	0% {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+}
+
+/* SVG */
+
+.track-svg {
+	width: 210px;
+	height: 210px;
+}
+
+.track-svg-circle {
+	r: 90;
+	stroke-width: 30;
+	fill: none;
+	transform: translate(105px, 105px) rotate(-90deg);
+}
+
+.track-svg-bg {
+	stroke: #CCCCCC;
+}
+
+.track.play.t1 .track-svg-bg {
+	stroke: #FF3C1E;
+}
+
+.track.play.t2 .track-svg-bg {
+	stroke: #28C873;
+}
+
+.track.play.t3 .track-svg-bg {
+	stroke: #A05AFF;
+}
+
+.track.play.t4 .track-svg-bg {
+	stroke: #FFDC00;
+}
+
+/* Record */
+
+.track-svg-rec {
+	display: none;
+}
+
+.track-svg-rec-icon {
+	r: 10px;
+	cx: 50%;
+	cy: 50%;
+	fill: #FF0000;
+}
+
+.track-svg-rec-bg {
+	stroke-dasharray: 570;
+	stroke-dashoffset: 570;
+	animation: track-rec 3s linear forwards paused;
+}
+
+.t1 .track-svg-rec-bg {
+	stroke: #FF3C1E;
+}
+
+.t2 .track-svg-rec-bg {
+	stroke: #28C873;
+}
+
+.t3 .track-svg-rec-bg {
+	stroke: #A05AFF;
+}
+
+.t4 .track-svg-rec-bg {
+	stroke: #FFDC00;
+}
+
+.track-svg-rec-bg-start {
+	r: 15;
+	cx: 105px;
+	cy: 15px;
+	fill: #FFDC00;
+}
+
+.track-svg-rec-bg-end {
+	r: 15;
+	cx: 105px;
+	cy: 105px;
+	fill: #FFDC00;
+	animation: track-rec-end 3s linear forwards paused;
+}
+
+.t1 .track-svg-rec-bg-start,
+.t1 .track-svg-rec-bg-end {
+	fill: #FF3C1E;
+}
+
+.t2 .track-svg-rec-bg-start,
+.t2 .track-svg-rec-bg-end {
+	fill: #28C873;
+}
+
+.t3 .track-svg-rec-bg-start,
+.t3 .track-svg-rec-bg-end {
+	fill: #A05AFF;
+}
+
+.t4 .track-svg-rec-bg-start,
+.t4 .track-svg-rec-bg-end {
+	fill: #FFDC00;
+}
+
+@keyframes track-rec {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes track-rec-end {
+	from {
+		transform: rotate(-90deg) translateX(90px) rotate(90deg);
+	}
+
+	to {
+		transform: rotate(270deg) translateX(90px) rotate(-270deg);
+	}
+}
+
+/* Play */
+
+.track-svg-beat {
+	r: 2;
+	fill: rgba(0, 0, 0, 0.6);
+	transform-origin: center;
+}
+
+.track-svg-beat.b1 {
+	cx: 105px;
+	cy: 15px;
+}
+
+.track-svg-beat.b2 {
+	cx: 195px;
+	cy: 105px;
+}
+
+.track-svg-beat.b3 {
+	cx: 105px;
+	cy: 195px;
+}
+
+.track-svg-beat.b4 {
+	cx: 15px;
+	cy: 105px;
+}
+
+.track-svg-beat.pulse {
+	animation: beat-pulse 0.2s ease-in-out forwards;
+}
+
+.track-svg-beat.b1.pulse {
+	animation: beat-pulse-big 0.2s ease-in-out forwards;
+}
+
+.track.stopped .track-svg-beat {
+	animation: none;
+}
+
+@keyframes beat-pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(2);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes beat-pulse-big {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(4);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+.track-svg-play {
+	display: none;
+	fill: url(#track-play);
+	animation: track-play 3s linear forwards infinite paused;
+	transform-origin: 50% 50%;
+}
+
+@keyframes track-play {
+	from {
+		transform: rotate(0);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
