@@ -321,26 +321,33 @@
 
 	var metroMute = document.getElementById("metronome");
 	
-	metroMute.addEventListener('click',function(){	
-		isMuted = !isMuted;
+	metroMute.addEventListener('click',function(e) {	
 		if(isMuted){
 			metroVol = 0;
+			metroMute.classList.remove('on');
 			console.log("Mute");
 		} else {
 			console.log("unMute");
 			metroVol = 1;
+			metroMute.classList.add('on');
 		}
-		
-		
-		
-		
+		isMuted = !isMuted;
 	});
 	
-	var mainPlay = document.getElementById("play");
+	var mainPlay = document.getElementById("play"),
+		playing = false;
 
-	mainPlay.addEventListener('click',function(){	
-			play();	
-			console.log("PLAY");
+	mainPlay.addEventListener('click',function(e) {	
+		e.preventDefault();
+
+		if(!playing) {
+			play();
+			mainPlay.classList.add('playing');
+		} else {
+			mainPlay.classList.remove('playing');
+		}
+
+		playing = !playing;
 	});
 	
 	
@@ -349,6 +356,20 @@
 	
 	});
 
+	var record = document.getElementById("rec"),
+		recording = false;
+
+	record.addEventListener('click',function(e) {	
+		e.preventDefault();
+
+		if(!recording) {
+			record.classList.add('recording');
+		} else {
+			record.classList.remove('recording');
+		}
+
+		recording = !recording;
+	});
 	
 
 	function nextNote() {
@@ -480,12 +501,17 @@
 
 	function beat() {
 		if(beatPos == 5) beatPos = 1;
-
-		//console.log(beatPos);
 		
 		for(var i = 0, j = tracks.length; i < j; i++)
 			tracks[i].registerBeat(beatPos-1);
-		//console.log(beatPos);
+		
+		if(!isMuted) {
+			metroMute.classList.add('beat');
+			setTimeout(function() {
+				metroMute.classList.remove('beat');
+			}, 50);
+		}
+
 		beatPos++;
 	}
 
