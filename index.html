@@ -33,7 +33,7 @@
 	<section id="tracks">
 		<!-- Track 1 -->
 		<section class="track-wrapper">
-			<section id="track1" class="track t1 empty">
+			<section id="track1" class="track t1 play">
 				<svg class="track-svg">
 					<circle class="track-svg-circle track-svg-bg"></circle>
 
@@ -66,13 +66,16 @@
 
 				<section class="track-controls">
 					<input class="track-volume" type="range" min="0" max="100" value="100">
-					<select class="track-effect">
-						<option selected="selected">No effect</option>
-						<option>Effect 1</option>
-						<option>Effect 2</option>
-						<option>Effect 3</option>
+					<div class="track-effect-wrapper cf">
+						<select class="track-effect">
+							<option selected="selected">No effect</option>
+							<option>Effect 1</option>
+							<option>Effect 2</option>
+							<option>Effect 3</option>
 
-					</select>
+						</select>
+						<input class="track-effect-slider" type="range" min="0" max="100" value="100">
+					</div>
 				</section>
 			</section><!-- end of .track -->
 		</section><!-- end of .track-wrapper -->

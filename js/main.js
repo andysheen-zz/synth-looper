@@ -63,7 +63,9 @@
 	 	var recEnd;
 	 	var trackHead;
 	 	var volume;
+	 	var effectWrapper;
 	 	var effect;
+	 	var effectSlider;
 	 	var beats;
 		
 		var recorder;
@@ -116,6 +118,11 @@
 			this.effect = this.view.getElementsByClassName('track-effect')[0];
 			this.effect.addEventListener('change', changeEffect);
 
+			this.effectWrapper = this.view.getElementsByClassName('track-effect-wrapper')[0];
+
+			this.effectSlider = this.view.getElementsByClassName('track-effect-slider')[0];
+			this.effectSlider.addEventListener('change', changeEffectSlider);
+
 			this.beats = this.view.getElementsByClassName("track-svg-beat");
 			for(var i = 0, j = this.beats.length; i < j; i++) {
 	 			this.beats[i].addEventListener('animationend', function(e) {
@@ -133,6 +140,8 @@
 				console.log("HEY");
 				playTrack();
 			}
+
+
 			
 	 	}
 		
@@ -227,13 +236,17 @@
 
 	 	function changeEffect(e) {
 	 		if(self.effect.selectedIndex == 0)
-	 			self.effect.classList.remove('selected');
+	 			self.effectWrapper.classList.remove('selected');
 	 		else
-	 			self.effect.classList.add('selected');
+	 			self.effectWrapper.classList.add('selected');
 
 	 		var value = self.effect.options[self.effect.selectedIndex].value;
 	 		// Change effect
 	 		//console.log(value);
+	 	}
+
+	 	function changeEffectSlider(e) {
+	 		console.log(self.effectSlider.value);
 	 	}
 
 	 	function changeVolume(e) {
@@ -546,7 +559,6 @@
 		output.gain.value = 0.8;
 		output.connect(context.destination);
 			
-		
 
     timerWorker = new Worker("js/metronomeworker.js");
 

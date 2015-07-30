@@ -29,6 +29,10 @@ body {
 	overflow: hidden;
 }
 
+input[type=range] {
+	-webkit-appearance: none;
+}
+
 input[type=range]:focus {
   outline: none;
 }
@@ -402,7 +406,6 @@ a {
 	width: 210px;
 	margin: 20px 0 0 0;
 	background-color: inherit;
-	-webkit-appearance: none;
 }
 
 .track-volume:before {
@@ -416,7 +419,6 @@ a {
 	background: url('../img/speaker.svg') no-repeat;
 	opacity: 0.7;
 }
-
 
 
 .track-effect {
@@ -436,8 +438,28 @@ a {
 	opacity: 0.5;
 }
 
-.track-effect.selected {
-	opacity: 1;	
+.track-effect-wrapper {
+	width: 210px;
+}
+
+.track-effect-wrapper.selected .track-effect {
+	float: left;
+	margin-left: 0;
+	left: 0;
+	opacity: 1;
+}
+
+.track-effect-slider {
+	display: none;
+	float: left;
+	width: 110px;
+	margin-left: 10px;
+	margin-top: 24px;
+	background-color: inherit;
+}
+
+.track-effect-wrapper.selected .track-effect-slider {
+	display: block;
 }
 
 /* Initial state — unrecorded */
