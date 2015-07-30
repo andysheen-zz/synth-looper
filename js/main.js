@@ -3,13 +3,14 @@
 	 * Track "class"
 	 */
 	var context = null;
-	
+	var isMuted = false;
+	var metroVol = 1;
 	var isPlaying = false;      // Are we currently playing?
 	var startTime;              // The start time of the entire sequence.
 	var current16thNote;        // What note is currently last scheduled?
 	var tempo1 = 120.0;          // tempo (in beats per minute)
 	var lookahead = 25.0;       // How frequently to call scheduling function 
-	                            //(in milliseconds)
+	 var beatPos = 1;                           //(in milliseconds)
 	var scheduleAheadTime = 0.1;    // How far ahead to schedule audio (sec)
 	                            // This is calculated from lookahead, and overlaps 
 	                            // with next interval (in case the timer is late)
@@ -29,6 +30,20 @@
 	 var STATE_REC = 		"rec";
 	 var STATE_PLAY = 		"play";
 	 var STATE_STOPPED =	"stopped";
+	 
+	 
+	
+	var output;
+	
+	
+	
+	//TO REMOVE
+	var trackCount =0;
+	var trackCount2 =0;
+	var trackCount3 =0;
+	var trackCount4 =0;
+	
+	 
 
 	 var Track = function() {
 	 	var bpm;
@@ -50,27 +65,23 @@
 	 	var volume;
 	 	var effect;
 	 	var beats;
+		
+		var recorder;
 
 	 	var self;
 		
-		var recorder;
-		var recorder2;
-		var recorder3;
-		var recorder4;
-		var output;
-		
-		var source;
-		
-		
+
 	//media stream for microphone   
 		
 		 	
 
 			
 
-	 	function init(view,bpm) {
+	 	function init(view,bpm, mediaStreamSource) {
 			
-	
+	        this.recorder = new Recorder(mediaStreamSource, {
+	   			workerPath: "/script/lib/recorderjs/recorderWorker.js"
+	      	});	
 				
 	 		this.view = view;
 
@@ -117,7 +128,25 @@
 			this.countdown = -1;
 			this.count = 0;
 			this.beat = -1;
+			
+			if(this.count == 1){
+				console.log("HEY");
+				playTrack();
+			}
+			
 	 	}
+		
+		    function playTrack(){
+			self.recorder.stop();
+			var source = context.createBufferSource();
+		    self.recorder.getBuffer(function (buffers) {
+		    source.buffer = context.createBuffer(1, buffers[0].length, 44100);
+		    source.buffer.getChannelData(0).set(buffers[0]);
+		    source.buffer.getChannelData(0).set(buffers[1]);
+			source.start(0);
+			source.connect(context.destination);
+			});	
+		}
 
 	 	function changeState(state) {
 	 		clearStates();
@@ -133,11 +162,15 @@
 	 			case(STATE_REC):
 	 				self.view.classList.add(STATE_REC);
 	 				// Code to record
+					self.recorder.clear();
+					self.recorder.record();
 	 				break;
 
 	 			case(STATE_PLAY):
 		 			self.view.classList.add(STATE_PLAY);
-
+					
+					playTrack();
+			
 	 				// Code to play
 	 				break;
 
@@ -168,26 +201,14 @@
 	 		self.view.classList.remove(STATE_STOPPED);
 	 	}
 
-	 	function eventRecord(e) {
-	  
-		   
-		 //  recorder.clear();
-		 // recorder.record();
-		  
+	 	function eventRecord(e) {  
 	 		e.preventDefault();
 	 		changeState(STATE_COUNT);
 	 	}
 
 	 	function eventPlay(e) {
 			/*
-			recorder.stop();  
-		    recorder.getBuffer(function (buffers) {
-		    source = context.createBufferSource();
-		    source.buffer = context.createBuffer(1, buffers[0].length, 44100);
-		    source.buffer.getChannelData(0).set(buffers[0]);
-		    source.buffer.getChannelData(0).set(buffers[1]);
- 			source.start(0);
-		 	source.connect(output);
+			
 		});
 	 		*/
 			e.preventDefault();
@@ -297,10 +318,35 @@
 	Main code
 	*/
 
+
+	var metroMute = document.getElementById("metronome");
+	
+	metroMute.addEventListener('click',function(){	
+		isMuted = !isMuted;
+		if(isMuted){
+			metroVol = 0;
+			console.log("Mute");
+		} else {
+			console.log("unMute");
+			metroVol = 1;
+		}
+		
+		
+		
+		
+	});
+	
+	var mainPlay = document.getElementById("play");
+
+	mainPlay.addEventListener('click',function(){	
+			play();	
+			console.log("PLAY");
+	});
+	
+	
 	// Start tempo
 	document.addEventListener("click", function(){
-	    document.getElementById("play");
-		
+	
 	});
 
 	
@@ -326,13 +372,12 @@
 	
 	   if ( (beatNumber%4))
 	      return; // we're not playing non-8th 16th notes
-	   // if ( (noteResolution==2) && (beatNumber%4))	
-	     //   return; // we're not playing non-quarter 8th notes
-
-	    // create an oscillator
-		 
+	   
 	    var osc = context.createOscillator();
-	    osc.connect( context.destination );
+		var metroGain = context.createGain();
+		osc.connect(metroGain);
+		metroGain.gain.value = metroVol;
+	    metroGain.connect( context.destination );
 	    if (beatNumber % 16 === 0){    // beat 0 == low pitch
 			beat();
 	        osc.frequency.value = 880.0;
@@ -354,7 +399,7 @@
 	function scheduler() {
 	    // while there are notes that will need to play before the next interval, 
 	    // schedule them and advance the pointer.
-		console.log(nextNoteTime);
+		//console.log(nextNoteTime);
 	    while (nextNoteTime < context.currentTime + scheduleAheadTime ) {
 	        scheduleNote( current16thNote, nextNoteTime );
 	        nextNote();
@@ -366,6 +411,7 @@
 	    isPlaying = !isPlaying;
 
 	    if (isPlaying) { // start playing
+			beatPos = 1;
 	        current16thNote = 0;
 	        nextNoteTime = context.currentTime;
 	        timerWorker.postMessage("start");
@@ -382,6 +428,7 @@
 	
 	    var tempo = document.getElementById('tempo-slider'),
 		tempoLabel = document.getElementById('tempo-value');
+		
 
 	tempoLabel.innerHTML = tempo.value;
 
@@ -392,41 +439,57 @@
 		new Track(),
 		new Track());
 
-	tracks[0].init(document.getElementById("track1"), tempo.value);
-	tracks[1].init(document.getElementById("track2"), tempo.value);
-	tracks[2].init(document.getElementById("track3"), tempo.value);
-	tracks[3].init(document.getElementById("track4"), tempo.value);
+	//Audio Context for Web Audio
+	navigator.webkitGetUserMedia({"audio": true}, function(stream) { 
+	    var mediaStreamSource = context.createMediaStreamSource( stream );
+	
+		tracks[0].init(document.getElementById("track1"), tempo.value, mediaStreamSource);
+		tracks[1].init(document.getElementById("track2"), tempo.value, mediaStreamSource);
+		tracks[2].init(document.getElementById("track3"), tempo.value, mediaStreamSource);
+		tracks[3].init(document.getElementById("track4"), tempo.value, mediaStreamSource);
+		
+        recorderFinal = new Recorder(output, {
+   			workerPath: "/script/lib/recorderjs/recorderWorker.js"
+       });
+	   
+		// While we don't figure out what's wrong with changing the animation speed
+		//Not needed for release
+		tempo.addEventListener('change', changeBPM);
+		changeBPM();
+		
+	},  function(error) {
+	  $("body").text("Error: you need to allow this sample to use the microphone.")
+	});
+
+
 
 	// Adjust track speed based on master tempo
 	tempo.addEventListener('input', function() {
 		tempoLabel.innerHTML = tempo.value;
+		tempo1 = tempo.value;
 	});
 
-	// While we don't figure out what's wrong with changing the animation speed
-	//Not needed for release
-	tempo.addEventListener('change', function() {
+
+	function changeBPM() {
 		for(var i = 0, j = tracks.length; i < j; i++)
 			tracks[i].setBPM(tempo.value);
-
-		//clearInterval(beat);
-		//setInterval(beat, 1000*60/tempo.value);
-	});
+	}
 
 	
-	var beatPos = 1;
+	
 
 	function beat() {
 		if(beatPos == 5) beatPos = 1;
 
 		//console.log(beatPos);
-
+		
 		for(var i = 0, j = tracks.length; i < j; i++)
 			tracks[i].registerBeat(beatPos-1);
-		console.log(beatPos);
+		//console.log(beatPos);
 		beatPos++;
 	}
 
-//	setInterval(beat, 1000*60/tempo.value);
+
 
 
 
@@ -458,38 +521,6 @@
 		output.connect(context.destination);
 			
 		
-		//Audio Context for Web Audio
-		navigator.webkitGetUserMedia({"audio": true}, function(stream) { 
-	    var mediaStreamSource = context.createMediaStreamSource( stream );
-	
-   //Track 1 
-        recorder = new Recorder(mediaStreamSource, {
-   workerPath: "/script/lib/recorderjs/recorderWorker.js"
-       });
-		
-	
-   //Track 2 
-        recorder2 = new Recorder(mediaStreamSource, {
-   workerPath: "/script/lib/recorderjs/recorderWorker.js"
-       });
-   //Track 3 
-        recorder3 = new Recorder(mediaStreamSource, {
-   workerPath: "/script/lib/recorderjs/recorderWorker.js"
-       });
-   //Track 4 
-        recorder4 = new Recorder(mediaStreamSource, {
-   workerPath: "/script/lib/recorderjs/recorderWorker.js"
-       });
-   //Final Track
-        recorderFinal = new Recorder(output, {
-   workerPath: "/script/lib/recorderjs/recorderWorker.js"
-       });
-		
-	},  function(error) {
-	  $("body").text("Error: you need to allow this sample to use the microphone.")
-	});
-	
-
 
     timerWorker = new Worker("js/metronomeworker.js");
 
@@ -504,7 +535,7 @@
     };
     timerWorker.postMessage({"interval":lookahead});
 	 
-	play();
+	
 	}
 	
 	
