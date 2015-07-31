@@ -9,9 +9,9 @@
 	var startTime;              // The start time of the entire sequence.
 	var current16thNote;        // What note is currently last scheduled?
 	var tempo1 = 120.0;          // tempo (in beats per minute)
-	var lookahead = 25.0;       // How frequently to call scheduling function 
+	var lookahead = 5.0;       // How frequently to call scheduling function 
 	 var beatPos = 1;                           //(in milliseconds)
-	var scheduleAheadTime = 0.1;    // How far ahead to schedule audio (sec)
+	var scheduleAheadTime = 0;    // How far ahead to schedule audio (sec)
 	                            // This is calculated from lookahead, and overlaps 
 	                            // with next interval (in case the timer is late)
 	var nextNoteTime = 0.0;     // when the next note is due.
@@ -31,19 +31,9 @@
 	 var STATE_PLAY = 		"play";
 	 var STATE_STOPPED =	"stopped";
 	 
-	 
-	
+	var monitor;
 	var output;
-	
-	
-	
-	//TO REMOVE
-	var trackCount =0;
-	var trackCount2 =0;
-	var trackCount3 =0;
-	var trackCount4 =0;
-	
-	 
+		 
 
 	 var Track = function() {
 	 	var bpm;
@@ -63,12 +53,21 @@
 	 	var recEnd;
 	 	var trackHead;
 	 	var volume;
+		var effectWrapper;
 	 	var effect;
+		var effectSlider;
 	 	var beats;
-		
+		var value;
 		var recorder;
+		var source;
+		var effectType;
 
+
+		var stopTrack = false;
+		var trackVol;
+		var effectVal;
 	 	var self;
+		
 		
 
 	//media stream for microphone   
@@ -80,8 +79,10 @@
 	 	function init(view,bpm, mediaStreamSource) {
 			
 	        this.recorder = new Recorder(mediaStreamSource, {
-	   			workerPath: "/script/lib/recorderjs/recorderWorker.js"
+	   			workerPath: "/js/lib/recorderjs/recorderWorker.js"
 	      	});	
+			
+		
 				
 	 		this.view = view;
 
@@ -111,10 +112,15 @@
 			this.trackHead = this.view.getElementsByClassName("track-svg-play")[0];
 
 			this.volume = this.view.getElementsByClassName('track-volume')[0];
-			this.volume.addEventListener('input', changeVolume);
+			this.volume.addEventListener('change', changeVolume);
 
 			this.effect = this.view.getElementsByClassName('track-effect')[0];
 			this.effect.addEventListener('change', changeEffect);
+			
+			this.effectWrapper = this.view.getElementsByClassName('track-effect-wrapper')[0];
+
+			this.effectSlider = this.view.getElementsByClassName('track-effect-slider')[0];
+			this.effectSlider.addEventListener('change', changeEffectSlider);
 
 			this.beats = this.view.getElementsByClassName("track-svg-beat");
 			for(var i = 0, j = this.beats.length; i < j; i++) {
@@ -129,24 +135,49 @@
 			this.count = 0;
 			this.beat = -1;
 			
-			if(this.count == 1){
-				console.log("HEY");
-				playTrack();
-			}
+			
 			
 	 	}
 		
 		    function playTrack(){
 			self.recorder.stop();
-			var source = context.createBufferSource();
+			
+			source = context.createBufferSource();
 		    self.recorder.getBuffer(function (buffers) {
 		    source.buffer = context.createBuffer(1, buffers[0].length, 44100);
 		    source.buffer.getChannelData(0).set(buffers[0]);
 		    source.buffer.getChannelData(0).set(buffers[1]);
 			source.start(0);
-			source.connect(context.destination);
+			//source.connect(output);
+			checkEffect();
+			
+			
 			});	
+		
 		}
+		
+		function getSample(url, cb) {
+		  var request = new XMLHttpRequest()
+		  request.open('GET', url)
+		  request.responseType = 'arraybuffer'
+		  request.onload = function() {
+		    context.decodeAudioData(request.response, cb)
+		  }
+		  request.send()
+		}
+		
+		function generateCurve(steps){
+		  var curve = new Float32Array(steps)
+		  var deg = Math.PI / 180
+
+		  for (var i=0;i<steps;i++) {
+		    var x = i * 2 / steps - 1
+		    curve[i] = (3 + 10) * x * 20 * deg / (Math.PI + 10 * Math.abs(x))
+		  }
+
+		  return curve
+		}
+		
 
 	 	function changeState(state) {
 	 		clearStates();
@@ -167,14 +198,17 @@
 	 				break;
 
 	 			case(STATE_PLAY):
+					stopTrack = false;
 		 			self.view.classList.add(STATE_PLAY);
 					
-					playTrack();
+					//playTrack();
 			
 	 				// Code to play
 	 				break;
 
 	 			case(STATE_STOPPED):
+					stopTrack = true;
+					self.recorder.stop();
 	 				//resetAnimation(self.trackHead);
 		 			self.view.classList.add(STATE_PLAY);
 		 			self.view.classList.add(STATE_STOPPED);
@@ -207,15 +241,14 @@
 	 	}
 
 	 	function eventPlay(e) {
-			/*
-			
-		});
-	 		*/
+			stopTrack = false;
+			//playTrack();
 			e.preventDefault();
 	 		changeState(STATE_PLAY);
 	 	}
 
 	 	function eventStop(e) {
+			stopTrack = true;
 	 		e.preventDefault();
 	 		changeState(STATE_STOPPED);
 	 	}
@@ -225,18 +258,91 @@
 	 		changeState(STATE_EMPTY);
 	 	}
 
-	 	function changeEffect(e) {
-	 		if(self.effect.selectedIndex == 0)
-	 			self.effect.classList.remove('selected');
-	 		else
-	 			self.effect.classList.add('selected');
+		function changeEffect(e) {
+		             if(self.effect.selectedIndex == 0)
+		                 self.effectWrapper.classList.remove('selected');
+		             else
+		                 self.effectWrapper.classList.add('selected');
 
-	 		var value = self.effect.options[self.effect.selectedIndex].value;
-	 		// Change effect
-	 		//console.log(value);
-	 	}
+		             effectType = self.effect.options[self.effect.selectedIndex].value;
+		             // Change effect
+		           
+					 checkEffect();
+				 }
+
+		         function changeEffectSlider(e) {
+		             console.log(self.effectSlider.value);
+					 effectVal = self.effectSlider.value;
+					
+		         }
+
+		   		 
+function checkEffect(){
+	trackVol = context.createGain();
+	trackVol.gain.value = self.volume.value/100.0;
+  console.log(value);
+		if(effectType == 'Delay'){
+			console.log("delay");
+		   var delay = context.createDelay();
+		    var feedback = context.createGain();
+		    feedback.gain.value = 0.6;
+		    var filter = context.createBiquadFilter();
+		    filter.frequency.value = 800;
+			console.log(effectVal/100.0)
+			delay.delayTime.value = effectVal/100.0; 
+		    delay.connect(feedback);
+		    feedback.connect(filter);
+		    filter.connect(delay);
+
+		    source.connect(delay);
+		   
+		    
+		     delay.connect(trackVol);
+			 source.connect(trackVol);
+			 		trackVol.connect(output);
+	}
+	else if(effectType == 'Reverb'){
+		
+		var convolver = context.createConvolver();
+		var revGain = context.createGain();
+	
+		  // Add reverb logic here 
+			source.connect(trackVol);
+			source.connect(convolver);
+			convolver.connect(revGain);
+			revGain.gain.value = effectVal/50.0;
+			revGain.connect(trackVol);
+					trackVol.connect(output);
+		getSample('http://thingsinjars.com/lab/web-audio-tutorial/Church-Schellingwoude.mp3', function(impulse){
+			convolver.buffer = impulse;
+		});
+	  
+	  
+}
+else if(effectType == 'Distortion'){
+	console.log("SI")
+	var waveShaper = context.createWaveShaper();
+	
+	
+	waveShaper.curve = generateCurve(22050);
+    var amp = context.createGain();
+    amp.gain.value = effectVal;
+    amp.connect(waveShaper);
+	source.connect(amp);
+	waveShaper.connect(trackVol);
+	trackVol.connect(output);
+	} else {
+		source.connect(trackVol);
+		trackVol.connect(output);
+	}
+	
+	
+}
+	
+
 
 	 	function changeVolume(e) {
+				trackVol.gain.value = self.volume.value/100.0;
 	 		//console.log(self.volume.value);
 	 	}
 
@@ -262,7 +368,9 @@
 
 	 	function registerBeat(beat) {
 	 		self.beat = beat;
-
+			if(self.beat == 0 && stopTrack == false){
+				playTrack();
+			}
 	 		// Pulse
  			self.beats[beat].classList.add("pulse");
 
@@ -321,34 +429,98 @@
 
 	var metroMute = document.getElementById("metronome");
 	
-	metroMute.addEventListener('click',function(){	
+	metroMute.addEventListener('click',function(e){	
+		e.preventDefault();
 		isMuted = !isMuted;
 		if(isMuted){
 			metroVol = 0;
 			console.log("Mute");
+			metroMute.classList.remove('on');
 		} else {
 			console.log("unMute");
 			metroVol = 1;
+			metroMute.classList.add('on');
 		}
-		
-		
-		
-		
 	});
+	metroMute.classList.add('on');
 	
 	var mainPlay = document.getElementById("play");
 
-	mainPlay.addEventListener('click',function(){	
-			play();	
+	mainPlay.addEventListener('click',function(e){
+			e.preventDefault();
+			//play();	
 			console.log("PLAY");
+			if(!isPlaying) {
+			            play();
+			            mainPlay.classList.add('playing');
+			        } else {
+			            mainPlay.classList.remove('playing');
+						play();
+			        }
 	});
 	
+	
+var record = document.getElementById("rec"),
+        recording = false;
+
+    record.addEventListener('click',function(e) {    
+        e.preventDefault();
+
+        if(!recording) {
+			recorderFinal.clear();
+			recorderFinal.record();
+            record.classList.add('recording');
+        } else {
+            record.classList.remove('recording');
+			recorderFinal.stop();
+			recordButtons.classList.add('recorded');
+        }
+
+        recording = !recording;
+    });
+	var recordButtons = document.getElementById("recording-buttons");
 	
 	// Start tempo
 	document.addEventListener("click", function(){
 	
 	});
 
+	
+	
+	var download = document.getElementById("download");
+	
+	download.addEventListener('click', function(){
+		//recorderFinal.clear();
+		//recorderFinal.record();
+		
+		createDownloadLink();
+		
+	console.log("DOWNLOAD");	
+	});
+	
+	
+	function createDownloadLink() {
+	    var bb = recorderFinal && recorderFinal.exportWAV(function(blob) {
+	      var url = URL.createObjectURL(blob);
+	      var li = document.createElement('li');
+	      var au = document.createElement('audio');
+	      var hf = document.createElement('a');
+      
+	      au.controls = true;
+	      au.src = url;
+	      hf.href = url;
+	      hf.download = new Date().toISOString() + '.wav';
+	      hf.innerHTML = hf.download;
+	      li.appendChild(au);
+	      li.appendChild(hf);
+		  var click = document.createEvent("Event");
+		     click.initEvent("click", true, true);
+		     hf.dispatchEvent(click);
+		  //recordingslist.appendChild(li);
+   
+   
+	    });	
+	  }
 	
 
 	function nextNote() {
@@ -377,7 +549,7 @@
 		var metroGain = context.createGain();
 		osc.connect(metroGain);
 		metroGain.gain.value = metroVol;
-	    metroGain.connect( context.destination );
+	    metroGain.connect( output );
 	    if (beatNumber % 16 === 0){    // beat 0 == low pitch
 			beat();
 	        osc.frequency.value = 880.0;
@@ -442,6 +614,7 @@
 	//Audio Context for Web Audio
 	navigator.webkitGetUserMedia({"audio": true}, function(stream) { 
 	    var mediaStreamSource = context.createMediaStreamSource( stream );
+		//mediaStreamSource.connect(context.destination);
 	
 		tracks[0].init(document.getElementById("track1"), tempo.value, mediaStreamSource);
 		tracks[1].init(document.getElementById("track2"), tempo.value, mediaStreamSource);
@@ -449,7 +622,7 @@
 		tracks[3].init(document.getElementById("track4"), tempo.value, mediaStreamSource);
 		
         recorderFinal = new Recorder(output, {
-   			workerPath: "/script/lib/recorderjs/recorderWorker.js"
+   			workerPath: "/js/lib/recorderjs/recorderWorker.js"
        });
 	   
 		// While we don't figure out what's wrong with changing the animation speed
@@ -486,6 +659,16 @@
 		for(var i = 0, j = tracks.length; i < j; i++)
 			tracks[i].registerBeat(beatPos-1);
 		//console.log(beatPos);
+		
+		
+		if(!isMuted) {
+			
+		            metroMute.classList.add('beat');
+		            setTimeout(function() {
+		                metroMute.classList.remove('beat');
+		            }, 50);
+		        }
+		
 		beatPos++;
 	}
 
@@ -519,9 +702,7 @@
 		output = context.createGain();
 		output.gain.value = 0.8;
 		output.connect(context.destination);
-			
 		
-
     timerWorker = new Worker("js/metronomeworker.js");
 
     timerWorker.onmessage = function(e) {

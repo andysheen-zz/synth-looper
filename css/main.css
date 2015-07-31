@@ -29,6 +29,10 @@ body {
 	overflow: hidden;
 }
 
+input[type=range] {
+	-webkit-appearance: none;
+}
+
 input[type=range]:focus {
   outline: none;
 }
@@ -122,18 +126,28 @@ a {
 	padding-top: 10px;
 }
 
+#tempo-wrapper {
+	position: absolute;
+	left: 50%;
+	top: 13px;
+	width: 234px;
+	margin-left: -117px;
+}
+
 #tempo {
 	position: absolute;
 	left: 50%;
-	margin-left: -240px;
+	top: 50%;
+	margin-left: -230px;
+	margin-top: -17px;
 	width: 190px;
 }
 
 #tempo-label {
 	float: left;
 	width: 50px;
-	margin-top: 15px;
 	line-height: 15px;
+	margin-top: 5px;
 }
 
 #tempo-value {
@@ -142,7 +156,7 @@ a {
 
 #tempo-slider {
 	width: 130px;
-	margin-top: 30px;
+	margin-top: 15px;
 	margin-left: 10px;
 	background-color: inherit;
 	-webkit-appearance: none;
@@ -167,24 +181,62 @@ a {
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	margin-left: 40px;
+	margin-left: 35px;
 	margin-top: -17px;
-	width: 34px;
-	height: 34px;
-	background: url('../img/metronome.svg') no-repeat;
+	width: 30px;
+	height: 30px;
+	border: 2px solid #FFFFFF;
+	border-radius: 20px;
+	background: url('../img/metronome.svg') no-repeat center center;
 }
 
 #metronome.on {
-	background-image: url('../img/metronomeOn.svg');
+	background-color: rgba(255, 255, 255, 0.3);
 }
 
-#header-buttons {
-	float: right;
-	margin-top: 10px;
+#metronome.on.beat {
+	background-color: rgba(255, 255, 255, 1);
 }
+
+#recording-buttons {
+	float: right;
+	margin-top: 13px;
+}
+
+#rec {
+	float: left;
+	display: block;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
+	border: 2px solid #FFFFFF;
+	border-radius: 19px;
+	background: url('../img/record.svg') no-repeat center center;
+}
+
+#rec.recording {
+	background-image: url('../img/stop.svg');
+	border-color: rgba(255, 0, 0, 1);
+	animation: rec-button 2s ease-out forwards infinite;
+}
+
+@keyframes rec-button {
+	0% {
+		border-color: rgba(255, 0, 0, 1);
+	}
+
+	50% {
+		border-color: rgba(255, 0, 0, 0);
+	}
+
+	100% {
+		border-color: rgba(255, 0, 0, 1);
+	}
+}	
 
 .header-button {
-	display: inline-block;
+	float: left;
+	display: block;
 	padding: 0 10px;
 	height: 30px;
 	line-height: 30px;
@@ -194,7 +246,11 @@ a {
 	transition: opacity 100ms;
 }
 
-.header-button:hover {
+.header-button + .header-button {
+	margin-left: 5px;
+}
+
+#recording-buttons.recorded .header-button {
 	opacity: 1;
 }
 
@@ -350,7 +406,6 @@ a {
 	width: 210px;
 	margin: 20px 0 0 0;
 	background-color: inherit;
-	-webkit-appearance: none;
 }
 
 .track-volume:before {
@@ -364,7 +419,6 @@ a {
 	background: url('../img/speaker.svg') no-repeat;
 	opacity: 0.7;
 }
-
 
 
 .track-effect {
@@ -384,8 +438,28 @@ a {
 	opacity: 0.5;
 }
 
-.track-effect.selected {
-	opacity: 1;	
+.track-effect-wrapper {
+	width: 210px;
+}
+
+.track-effect-wrapper.selected .track-effect {
+	float: left;
+	margin-left: 0;
+	left: 0;
+	opacity: 1;
+}
+
+.track-effect-slider {
+	display: none;
+	float: left;
+	width: 110px;
+	margin-left: 10px;
+	margin-top: 24px;
+	background-color: inherit;
+}
+
+.track-effect-wrapper.selected .track-effect-slider {
+	display: block;
 }
 
 /* Initial state — unrecorded */

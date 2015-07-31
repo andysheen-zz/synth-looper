@@ -19,12 +19,13 @@
 			<input id="tempo-slider" type="range" min="60" max="180" value="120" />
 		</div>
 
-		<a id="play"></a>
-		<a id="metronome"></a>
+		<a id="play" href='#'></a>
+		<a id="metronome" href='#'></a>
 
-		<div id="header-buttons">
-			<a href="#" class="header-button">Download</a>
-			<a href="#" class="header-button sc">Share to Soundcloud</a>
+			<div id="recording-buttons" class="cf">
+			<a id="rec" href="#"></a>
+			<a id="download" href="#" class="header-button">Download</a>
+			<a id="share" href="#" class="header-button sc">Share to Soundcloud</a>
 		</div>
 	</header>
 
@@ -63,14 +64,16 @@
 				</div>
 
 				<section class="track-controls">
-					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<input class="track-volume" type="range" min="0.0" max="100.0" value="50">
+					<div class="track-effect-wrapper cf">
 					<select class="track-effect">
 						<option selected="selected">No effect</option>
-						<option>Effect 1</option>
-						<option>Effect 2</option>
-						<option>Effect 3</option>
-
+						<option>Delay </option>
+						<option>Distortion</option>
+						<option>Reverb</option>
 					</select>
+						<input class="track-effect-slider" type="range" min="0" max="100" value="100">
+				</div>
 				</section>
 			</section><!-- end of .track -->
 		</section><!-- end of .track-wrapper -->
@@ -109,14 +112,16 @@
 				</div>
 
 				<section class="track-controls">
-					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<input class="track-volume" type="range" min="0.0" max="100.0" value="50">
+					<div class="track-effect-wrapper cf">
 					<select class="track-effect">
 						<option selected="selected">No effect</option>
-						<option>Effect 1</option>
-						<option>Effect 2</option>
-						<option>Effect 3</option>
-
+						<option>Delay </option>
+						<option>Distortion</option>
+						<option>Reverb</option>
 					</select>
+						<input class="track-effect-slider" type="range" min="0" max="100" value="100">
+				</div>
 				</section>
 			</section><!-- end of .track -->
 		</section><!-- end of .track-wrapper -->
@@ -155,14 +160,16 @@
 				</div>
 
 				<section class="track-controls">
-					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<input class="track-volume" type="range" min="0.0" max="100.0" value="50">
+					<div class="track-effect-wrapper cf">
 					<select class="track-effect">
 						<option selected="selected">No effect</option>
-						<option>Effect 1</option>
-						<option>Effect 2</option>
-						<option>Effect 3</option>
-
+						<option>Delay </option>
+						<option>Distortion</option>
+						<option>Reverb</option>
 					</select>
+						<input class="track-effect-slider" type="range" min="0" max="100" value="100">
+				</div>
 				</section>
 			</section><!-- end of .track -->
 		</section><!-- end of .track-wrapper -->
@@ -201,18 +208,19 @@
 				</div>
 
 				<section class="track-controls">
-					<input class="track-volume" type="range" min="0" max="100" value="100">
+					<input class="track-volume" type="range" min="0.0" max="100.0" value="50">
+					<div class="track-effect-wrapper cf">
 					<select class="track-effect">
 						<option selected="selected">No effect</option>
-						<option>Effect 1</option>
-						<option>Effect 2</option>
-						<option>Effect 3</option>
-
+						<option>Delay </option>
+						<option>Distortion</option>
+						<option>Reverb</option>
 					</select>
+						<input class="track-effect-slider" type="range" min="0" max="100" value="100">
+				</div>
 				</section>
 			</section><!-- end of .track -->
 		</section><!-- end of .track-wrapper -->
-
 
 	</section><!-- end of #tracks -->
 
