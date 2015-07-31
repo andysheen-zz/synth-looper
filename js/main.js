@@ -79,7 +79,7 @@
 	 	function init(view,bpm, mediaStreamSource) {
 			
 	        this.recorder = new Recorder(mediaStreamSource, {
-	   			workerPath: "/js/lib/recorderjs/recorderWorker.js"
+	   			workerPath: "./js/lib/recorderjs/recorderWorker.js"
 	      	});	
 			
 		
@@ -622,7 +622,7 @@ var record = document.getElementById("rec"),
 		tracks[3].init(document.getElementById("track4"), tempo.value, mediaStreamSource);
 		
         recorderFinal = new Recorder(output, {
-   			workerPath: "/js/lib/recorderjs/recorderWorker.js"
+   			workerPath: "./js/lib/recorderjs/recorderWorker.js"
        });
 	   
 		// While we don't figure out what's wrong with changing the animation speed
