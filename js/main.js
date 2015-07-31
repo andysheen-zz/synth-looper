@@ -65,7 +65,7 @@
 
 		var stopTrack = false;
 		var trackVol;
-		var effectVal;
+		var effectVal = 50;
 	 	var self;
 		
 		
@@ -273,6 +273,7 @@
 		         function changeEffectSlider(e) {
 		             console.log(self.effectSlider.value);
 					 effectVal = self.effectSlider.value;
+					 checkEffect();
 					
 		         }
 
