@@ -41,6 +41,8 @@
 		var beat;
 		var countdown;
 
+		var source;
+
 		// DOM elements
 		var view;
 		var buttonRec;
@@ -59,7 +61,6 @@
 		var beats;
 		var value;
 		var recorder;
-		var source;
 		var effectType;
 
 
@@ -78,6 +79,8 @@
 
 		function init(view,bpm, mediaStreamSource) {
 			
+			this.source = context.createBufferSource();
+
 			this.recorder = new Recorder(mediaStreamSource, {
 				workerPath: "./js/lib/recorderjs/recorderWorker.js"
 			});
@@ -134,16 +137,21 @@
 		
 		function playTrack(){
 			self.recorder.stop();
-			
-			source = context.createBufferSource();
-			self.recorder.getBuffer(function (buffers) {
-				source.buffer = context.createBuffer(1, buffers[0].length, 44100);
-				source.buffer.getChannelData(0).set(buffers[0]);
-				source.buffer.getChannelData(0).set(buffers[1]);
-				source.start(0);
-				//source.connect(output);
-				checkEffect();
-			});	
+
+			if(self.source.isPlaying) self.source.stop();			
+			try { 
+				self.source = context.createBufferSource();
+				self.recorder.getBuffer(function (buffers) {
+					self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
+					self.source.buffer.getChannelData(0).set(buffers[0]);
+					self.source.buffer.getChannelData(0).set(buffers[1]);
+					self.source.start(0);
+					//source.connect(output);
+					checkEffect();
+				});	
+			} catch(e) {
+				// This is only here because I've seen too many errors... :(
+			}
 		
 		}
 		
@@ -183,6 +191,7 @@
 
 				case(STATE_REC):
 					self.view.classList.add(STATE_REC);
+					self.setBPM(tempo1);
 					// Code to record
 					self.recorder.clear();
 					self.recorder.record();
@@ -191,8 +200,6 @@
 				case(STATE_PLAY):
 					stopTrack = false;
 					self.view.classList.add(STATE_PLAY);
-					
-					//playTrack();
 			
 					// Code to play
 					break;
@@ -200,17 +207,20 @@
 				case(STATE_STOPPED):
 					stopTrack = true;
 					self.recorder.stop();
-					//resetAnimation(self.trackHead);
 					self.view.classList.add(STATE_PLAY);
 					self.view.classList.add(STATE_STOPPED);
-					for(var i = 0, j = self.beats.length; i < j; i++)
+					for(var i = 0, j = self.beats.length; i < j; i++) {
 						self.beats[i].classList.remove('pulse');
+					}
 					// Code to stop
+					self.source.stop();
 					break;
 
 				case(STATE_EMPTY):
 					self.view.classList.add(STATE_EMPTY);
 					// Code to delete current track
+					self.source.stop();
+					self.recorder.clear();
 					break;
 
 			}
@@ -228,14 +238,18 @@
 
 		function eventRecord(e) {  
 			e.preventDefault();
-			changeState(STATE_COUNT);
+			if(isPlaying) {
+				changeState(STATE_COUNT);
+			}
 		}
 
 		function eventPlay(e) {
-			stopTrack = false;
-			//playTrack();
 			e.preventDefault();
-			changeState(STATE_PLAY);
+			if(isPlaying) {
+				stopTrack = false;
+				//playTrack();
+				changeState(STATE_PLAY);
+			}
 		}
 
 		function eventStop(e) {
@@ -285,10 +299,10 @@
 				feedback.connect(filter);
 				filter.connect(delay);
 
-				source.connect(delay);
+				self.source.connect(delay);
 
 				delay.connect(trackVol);
-				source.connect(trackVol);
+				self.source.connect(trackVol);
 				trackVol.connect(output);
 			}
 			else if(effectType == 'Reverb'){
@@ -297,8 +311,8 @@
 				var revGain = context.createGain();
 			
 				// Add reverb logic here 
-				source.connect(trackVol);
-				source.connect(convolver);
+				self.source.connect(trackVol);
+				self.source.connect(convolver);
 				convolver.connect(revGain);
 				revGain.gain.value = effectVal/50.0;
 				revGain.connect(trackVol);
@@ -317,11 +331,11 @@
 				var amp = context.createGain();
 				amp.gain.value = effectVal;
 				amp.connect(waveShaper);
-				source.connect(amp);
+				self.source.connect(amp);
 				waveShaper.connect(trackVol);
 				trackVol.connect(output);
 			} else {
-				source.connect(trackVol);
+				self.source.connect(trackVol);
 				trackVol.connect(output);
 			}		
 		}
@@ -333,13 +347,20 @@
 
 		function resetAnimation(element) {
 			var duration = element.style.animationDuration;
-			var delay = element.style.animationDelay;
+			//var delay = element.style.animationDelay;
 			element.style.webkitAnimation = 'none';
 			setTimeout(function() {
 				element.style.webkitAnimation = '';
 				element.style.animationDuration = duration;
-				element.style.animationDelay = delay;
+				element.style.animationDelay = -(current16thNote/16.0)*(60/tempo1);
 			}, 10);
+		}
+
+		function resetAllAnimations() {
+			elements = [self.trackHead,self.rec,self.recEnd];
+			for (var i = elements.length - 1; i >= 0; i--) {
+				resetAnimation(elements[i]);
+			};
 		}
 
 		function setBPM(bpm) {
@@ -401,7 +422,12 @@
 		return {
 			init: init,
 			setBPM: setBPM,
-			registerBeat: registerBeat
+			registerBeat: registerBeat,
+			resetAllAnimations: resetAllAnimations,
+			stopTrack: stopTrack,
+			changeState: changeState,
+			state: state,
+			source: source
 		}
 	};
 	
@@ -563,15 +589,35 @@
 	function play() {
 		//console.log(isPlaying);
 		isPlaying = !isPlaying;
-
 		if (isPlaying) { // start playing
 			beatPos = 1;
 			current16thNote = 0;
 			nextNoteTime = context.currentTime;
 			timerWorker.postMessage("start");
+			// Reset the animations properly
+			for(var i=0;i<tracks.length;i++) {
+				try {
+					tracks[i].resetAllAnimations();
+					tracks[i].registerBeat(0);
+				} catch(e) {
+					// Nothing, this just makes sure there aren't any problems...
+				}
+			}
 			return "stop";
 		} else {
 			timerWorker.postMessage("stop");
+			// Stop all the other sources
+			for(var i=0; i<tracks.length;i++) {
+				if(tracks[i].state == STATE_PLAY) {
+					tracks[i].stopTrack = true;
+					tracks[i].changeState(STATE_STOPPED);
+					try {
+						tracks[i].source.stop();
+					} catch (e) {
+						// NOWT
+					}
+				}
+			}
 			return "play";
 		}
 	}
@@ -609,8 +655,7 @@
 	   
 		// While we don't figure out what's wrong with changing the animation speed
 		// Not needed for release
-		tempo.addEventListener('change', changeBPM);
-		changeBPM();
+		changeBPM(false);
 		
 	},  function(error) {
 		$("body").text("Error: you need to allow this sample to use the microphone.")
@@ -618,16 +663,37 @@
 
 
 
-	// Adjust track speed based on master tempo
+	// Adjust shown track speed based on master tempo
 	tempo.addEventListener('input', function() {
 		tempoLabel.innerHTML = tempo.value;
+	});
+
+	// But don't change it until it's fully there.
+	tempo.addEventListener('change', function() {
 		tempo1 = tempo.value;
+		changeBPM(true);
 	});
 
 
-	function changeBPM() {
-		for(var i = 0, j = tracks.length; i < j; i++)
-			tracks[i].setBPM(tempo.value);
+	function changeBPM(reset) {
+		current16thNote = 0;
+		beatPos = 1;
+		for(var i = 0, j = tracks.length; i < j; i++){
+			try {
+				tracks[i].setBPM(tempo.value);
+				tracks[i].source.stop();
+			} catch (e) {
+				// NOTHING!!!
+			}
+			if(reset) {
+				try {
+					tracks[i].resetAllAnimations();
+					tracks[i].registerBeat(0);
+				} catch (e) {
+					// NOTHING!!!!
+				}
+			}
+		}
 	}
 
 	
