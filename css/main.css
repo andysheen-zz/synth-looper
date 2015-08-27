@@ -140,14 +140,20 @@ a {
 	top: 50%;
 	margin-left: -230px;
 	margin-top: -17px;
-	width: 190px;
+	width: 200px;
 }
 
 #tempo-label {
 	float: left;
 	width: 50px;
-	line-height: 15px;
-	margin-top: 5px;
+	margin-right:10px;
+	margin-bottom:10px;
+	line-height: 1.2em;
+}
+
+button {
+	background-color:#111111;
+	border-style:none;
 }
 
 #tempo-value {

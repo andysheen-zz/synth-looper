@@ -674,6 +674,29 @@
 		changeBPM(true);
 	});
 
+	var lastClick;
+	var previousValues = [];
+	$("#tempo-click").click(function() {
+		setTempo();
+		lastClick = (new Date()).getTime();
+	});
+
+	function setTempo() {
+		var newVal = (new Date()).getTime() - lastClick;
+		if(newVal != NaN) previousValues.push(newVal);
+		if(previousValues.length > 5) {
+			previousValues.shift();
+			var tot = 0;
+			for(var i=0;i<previousValues.length;i++) {
+				tot += previousValues[i];
+			}
+			tot /= previousValues.length;
+			tempo.value = 60/tot * 1000;
+			tempoLabel.innerHTML = tempo.value;
+			tempo1 = tempo.value;
+			changeBPM(true);
+		}
+	}
 
 	function changeBPM(reset) {
 		current16thNote = 0;
