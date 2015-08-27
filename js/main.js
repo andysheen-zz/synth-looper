@@ -137,7 +137,6 @@
 		
 		function playTrack(){
 			self.recorder.stop();
-
 			if(self.source.isPlaying) self.source.stop();			
 			try { 
 				self.source = context.createBufferSource();
@@ -691,10 +690,13 @@
 				tot += previousValues[i];
 			}
 			tot /= previousValues.length;
-			tempo.value = 60/tot * 1000;
-			tempoLabel.innerHTML = tempo.value;
-			tempo1 = tempo.value;
-			changeBPM(true);
+			tot = 60/tot * 1000;
+			if(tot > 60 && tot < 180) {
+				tempo.value = tot;
+				tempoLabel.innerHTML = tempo.value;
+				tempo1 = tempo.value;
+				changeBPM(true);
+			}
 		}
 	}
 
