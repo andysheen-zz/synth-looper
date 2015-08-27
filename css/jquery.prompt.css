@@ -1,0 +1,136 @@
+/**
+ * CSS which compliments the jquery.prompt.js plugin
+ * @Author Andrew Dodson
+ * @since Jan 2012
+ * Modified by Finnbar Keating...
+ */
+
+.jquery_prompt{
+	position:fixed;
+	top:0;
+	left:0; 
+	right: 0;
+	bottom:0;
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	background-color:transparent;
+	color:#111111;
+	border-color:white;
+	font-family:arial;
+	font-weight:bold;
+	font-color:white;
+	z-index:10000;
+	border:none;
+
+
+	/* display content vertically, with flex box */
+	display: -webkit-box; 
+	-webkit-box-align: center;
+	display: -moz-box; 
+	-moz-box-align: center;
+	display: -ms-box; 
+	-ms-box-align: center;
+	display: box; 
+	box-align: center;
+}
+iframe.jquery_prompt{
+	display:table;
+	filter: alpha(Opacity=20);
+}
+.jquery_prompt ~ *:not(.jquery_prompt) {
+	-webkit-filter: blur(2px);
+}
+
+	.jquery_prompt form{
+		margin:5% auto;
+		/* display:table seems to work at positioning horizontally in all but IE, however it means we can't use IE filters*/;
+		display:table;
+		box-sizing:border-box;
+		-moz-box-sizing:border-box;
+	}
+
+	.plugin form{
+		text-align:center;
+		max-width: 100%;
+		border-radius: 5px;
+		box-shadow:0 20px 60px #111111;
+		box-shadow:0 20px 60px rgba(0,0,0,0.8);
+		padding:0;
+		font-size:1.5em;
+		position: relative;
+		line-height:1.2em;
+	}
+	.plugin form > *,
+	.plugin form h1,
+	.plugin form p,
+	.plugin form .footer{
+		padding-left:20px;
+		padding-right:20px;
+		color:#ffffff;
+		font-family: "Univers LT W04_55 Roman", "HelveticaNeue", Helvetica, sans-serif;
+	}
+	.plugin form > :first-child{
+		padding-top:20px;
+	}
+	.plugin form .footer{
+		padding-bottom:20px;
+		position: relative;
+	}
+
+		.plugin input{
+			width:100%;
+			font-size:inherit;
+			margin-top:20px;
+			color:#111111;
+		}
+		.plugin button{
+			color:#111111;
+			border-color:white;
+			margin-top:20px;
+			font-weight:normal;
+			vertical-align: top;
+			font-size:inherit;
+			border-radius:5px;
+		}
+		.plugin button[type=button]{
+			background-color:#111111;
+			font-size:0.7em;
+			padding:9px 10px;
+		}
+		
+		.plugin button[type=reset]{
+			background-color:#111111;
+			font-size:0.7em;
+			padding:9px 10px;
+		}
+
+		.plugin button[type=submit]{
+			background-color:#111111;
+			font-weight:bold;
+			font-size:0.7em;
+			padding:9px 10px;
+		}
+
+		.plugin input[type=checkbox],.plugin input[type=checkbox] + label{
+			width:auto;
+			font-size:12px;
+		}
+
+
+/**
+ * Add Gradients
+ */
+	.plugin form, 
+	.plugin button,
+	.plugin .gradient{
+		background-color:#111111;
+	}	
+	.plugin button{
+		color:white;
+		border:1px solid #fff;
+		background-color:#fff;
+		cursor: pointer;
+		padding: 5px 10px;
+	}

@@ -24,6 +24,7 @@
 								// and may or may not have played yet. {note, time}
 	var timerWorker = null;     // The Web Worker used to fire timer messages
 	
+	var name = "";
 	
 	var STATE_EMPTY = 		"empty";
 	var STATE_COUNT = 		"count";
@@ -42,6 +43,8 @@
 		var countdown;
 
 		var source;
+		var buffer;
+		var imported = false;
 
 		// DOM elements
 		var view;
@@ -140,14 +143,22 @@
 			if(self.source.isPlaying) self.source.stop();			
 			try { 
 				self.source = context.createBufferSource();
-				self.recorder.getBuffer(function (buffers) {
-					self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
-					self.source.buffer.getChannelData(0).set(buffers[0]);
-					self.source.buffer.getChannelData(0).set(buffers[1]);
+				if(!imported) {
+					self.recorder.getBuffer(function (buffers) {
+						self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
+						self.source.buffer.getChannelData(0).set(buffers[0]);
+						self.source.buffer.getChannelData(0).set(buffers[1]);
+						self.buffer = self.source.buffer;
+						self.source.start(0);
+						//source.connect(output);
+						checkEffect();
+					});	
+					imported = true;
+				} else {
+					self.source.buffer = self.buffer;
 					self.source.start(0);
-					//source.connect(output);
 					checkEffect();
-				});	
+				}
 			} catch(e) {
 				// This is only here because I've seen too many errors... :(
 			}
@@ -194,6 +205,7 @@
 					// Code to record
 					self.recorder.clear();
 					self.recorder.record();
+					imported = false;
 					break;
 
 				case(STATE_PLAY):
@@ -219,6 +231,8 @@
 					self.view.classList.add(STATE_EMPTY);
 					// Code to delete current track
 					self.source.stop();
+					self.buffer = null;
+					imported = false;
 					self.recorder.clear();
 					break;
 
@@ -280,7 +294,7 @@
 			checkEffect();	
 		}
 
-				 
+		
 		function checkEffect(){
 			trackVol = context.createGain();
 			trackVol.gain.value = self.volume.value/100.0;
@@ -292,7 +306,7 @@
 				feedback.gain.value = 0.6;
 				var filter = context.createBiquadFilter();
 				filter.frequency.value = 800;
-				console.log(effectVal/100.0)
+				console.log(effectVal/100.0);
 				delay.delayTime.value = effectVal/100.0; 
 				delay.connect(feedback);
 				feedback.connect(filter);
@@ -319,13 +333,12 @@
 				getSample('http://thingsinjars.com/lab/web-audio-tutorial/Church-Schellingwoude.mp3', function(impulse){
 					convolver.buffer = impulse;
 				});
-	  
-	  
+
+
 				}
 			else if(effectType == 'Distortion'){
 				console.log("SI")
 				var waveShaper = context.createWaveShaper();
-				
 				waveShaper.curve = generateCurve(22050);
 				var amp = context.createGain();
 				amp.gain.value = effectVal;
@@ -480,6 +493,9 @@
 			record.classList.add('recording');
 		} else {
 			record.classList.remove('recording');
+			$("<p>What is your track called?</p>").prompt(function(e) {
+				name = e.response;
+			},false);
 			recorderFinal.stop();
 			recordButtons.classList.add('recorded');
 		}
@@ -518,6 +534,7 @@
 		au.src = url;
 		hf.href = url;
 		hf.download = new Date().toISOString() + '.wav';
+		if(name != "") hf.download = name + '.wav';
 		hf.innerHTML = hf.download;
 		li.appendChild(au);
 		li.appendChild(hf);
@@ -648,6 +665,23 @@
 		tracks[2].init(document.getElementById("track3"), tempo.value, mediaStreamSource);
 		tracks[3].init(document.getElementById("track4"), tempo.value, mediaStreamSource);
 		
+		var tohightlight1 = document.getElementById("track1");
+		var tohightlight2 = document.getElementById("track2");
+		var tohightlight3 = document.getElementById("track3");
+		var tohightlight4 = document.getElementById("track4");
+
+		tohightlight1.addEventListener('click', function() {
+			if(isPlaying) tohightlight2.classList.remove('faded');
+		});
+
+		tohightlight2.addEventListener('click', function() {
+			if(isPlaying) tohightlight3.classList.remove('faded');
+		});
+
+		tohightlight3.addEventListener('click', function() {
+			if(isPlaying) tohightlight4.classList.remove('faded');
+		});
+
 		recorderFinal = new Recorder(output, {
 			workerPath: "./js/lib/recorderjs/recorderWorker.js"
 		});
