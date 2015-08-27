@@ -349,8 +349,10 @@
 			var duration = element.style.animationDuration;
 			//var delay = element.style.animationDelay;
 			element.style.webkitAnimation = 'none';
+			element.style.animation = 'none';
 			setTimeout(function() {
 				element.style.webkitAnimation = '';
+				element.style.animation = '';
 				element.style.animationDuration = duration;
 				element.style.animationDelay = -(current16thNote/16.0)*(60/tempo1);
 			}, 10);
@@ -640,7 +642,19 @@
 		new Track());
 
 	//Audio Context for Web Audio
-	navigator.webkitGetUserMedia({"audio": true}, function(stream) { 
+
+	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+		getUserMedia: function(c) {
+			return new Promise(function(y, n) {
+			   (navigator.mozGetUserMedia ||
+				navigator.webkitGetUserMedia).call(navigator, c, y, n);
+			});
+		}
+	} : null);
+
+
+	navigator.mediaDevices.getUserMedia({"audio": true})
+	.then(function(stream) {
 		var mediaStreamSource = context.createMediaStreamSource( stream );
 		//mediaStreamSource.connect(context.destination);
 	
@@ -656,12 +670,10 @@
 		// While we don't figure out what's wrong with changing the animation speed
 		// Not needed for release
 		changeBPM(false);
-		
-	},  function(error) {
+	})
+	.catch(function(error) {
 		$("body").text("Error: you need to allow this sample to use the microphone.")
 	});
-
-
 
 	// Adjust shown track speed based on master tempo
 	tempo.addEventListener('input', function() {
@@ -697,8 +709,6 @@
 	}
 
 	
-	
-
 	function beat() {
 		if(beatPos == 5) beatPos = 1;
 
@@ -719,12 +729,6 @@
 
 		beatPos++;
 	}
-
-
-
-
-
-
 
 	/* Basic functions */
 
