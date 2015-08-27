@@ -251,9 +251,15 @@
 
 		function eventRecord(e) {  
 			e.preventDefault();
-			if(isPlaying) {
-				changeState(STATE_COUNT);
+			if(!isPlaying) {
+				isPlaying = true
+				beatPos = 1;
+				current16thNote = 0;
+				nextNoteTime = context.currentTime;
+				timerWorker.postMessage("start");
+				mainPlay.classList.add('playing');
 			}
+			changeState(STATE_COUNT);
 		}
 
 		function eventPlay(e) {

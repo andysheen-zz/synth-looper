@@ -290,6 +290,10 @@ button {
 	left: 50%;
 	margin-left: -110px;
 	width: 210px;
+	-webkit-transition: opacity 200ms ease-out;
+	-moz-transition: opacity 200ms ease-out;
+	-o-transition: opacity 200ms ease-out;
+	transition: opacity 200ms ease-out;
 	/*height: 210px;*/
 }
 
@@ -727,7 +731,7 @@ button {
 }
 
 .faded {
-	opacity: 0.2;
+	opacity: 0.1;
 }
 
 /**
