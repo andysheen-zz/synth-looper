@@ -38,7 +38,7 @@
 	var metroGain;
 
 	var tooltips;
-		 
+	var timeAtZero = 0;
 
 	var Track = function() {
 		var bpm;
@@ -150,29 +150,34 @@
 				if(!imported) {
 					// This call takes 3ms-ish:
 					// This isn't at fault - I've reduced the audio quality multiple times and it makes no difference
-					self.recorder.getBuffer(function (buffers) {
-						self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
-						self.source.buffer.getChannelData(0).set(buffers[0]);
-						self.source.buffer.getChannelData(0).set(buffers[1]);
-						self.buffer = self.source.buffer;
-						self.source.isPlaying = true;
-						self.source.onended = function() {
-							self.source.isPlaying = false;
-						}; // Wow, this is just hacky :P
-						//source.connect(output);
-						checkEffect();
-					});
-					self.source.start(0);
-					imported = true;
+					importBuffer();
 				} else {
 					self.source.buffer = self.buffer;
-					self.source.start(0);
+					self.source.start(0,((new Date()).getTime() - timeAtZero)/1000);
 					checkEffect();
 				}
 			} catch(e) {
 				// This is only here because I've seen too many errors... :(
 			}
 		
+		}
+
+		function importBuffer() {
+			self.recorder.getBuffer(function (buffers) {
+				self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
+				self.source.buffer.getChannelData(0).set(buffers[0]);
+				self.source.buffer.getChannelData(0).set(buffers[1]);
+				self.buffer = self.source.buffer;
+				self.source.isPlaying = true;
+				self.source.onended = function() {
+					self.source.isPlaying = false;
+				}; // Wow, this is just hacky :P
+				//source.connect(output);
+				console.log("imported, play!");
+				self.source.start(0,((new Date()).getTime() - timeAtZero)/1000);
+				checkEffect();
+			});
+			imported = true;
 		}
 		
 		function getSample(url, cb) {
@@ -222,7 +227,8 @@
 					stopTrack = false;
 					self.view.classList.add(STATE_PLAY);
 					// Code to play
-					self.recorder.stop();
+					playTrack();
+					console.log("play!");
 					break;
 
 				case(STATE_STOPPED):
@@ -402,6 +408,7 @@
 		function registerBeat(beat) {
 			self.beat = beat;
 			if(self.beat == 0 && stopTrack == false){
+				timeAtZero = (new Date()).getTime();
 				playTrack();
 			}
 			// Pulse
@@ -574,7 +581,7 @@
 		current16thNote++;    // Advance the beat number, wrap to zero
 		if (current16thNote == 16) {
 			current16thNote = 0;
-			console.log("tick");
+			console.log(timeAtZero);
 			//trigger record if pressed
 		}
 	}
