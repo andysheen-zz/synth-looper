@@ -75,14 +75,7 @@
 		var trackVol;
 		var effectVal = 50;
 		var self;
-		var timeAtCall = 0;
-			
-
 		//media stream for microphone   
-			
-				
-
-				
 
 		function init(view,bpm, mediaStreamSource) {
 			
@@ -153,7 +146,7 @@
 					importBuffer();
 				} else {
 					self.source.buffer = self.buffer;
-					self.source.start(0,((2*(new Date()).getTime()) - timeAtZero - timeAtCall)/1000);
+					self.source.start(0,((new Date()).getTime() - timeAtZero + 150)/1000);
 					checkEffect();
 				}
 			} catch(e) {
@@ -174,7 +167,7 @@
 				}; // Wow, this is just hacky :P
 				//source.connect(output);
 				console.log("imported, play!");
-				self.source.start(0,((2*(new Date()).getTime()) - timeAtZero - timeAtCall)/1000);
+				self.source.start(0,((new Date()).getTime() - timeAtZero + 150)/1000);
 				checkEffect();
 			});
 			imported = true;
@@ -406,7 +399,6 @@
 		}
 
 		function registerBeat(beat) {
-			timeAtCall = (new Date()).getTime();
 			self.beat = beat;
 			if(self.beat == 0 && stopTrack == false){
 				timeAtZero = (new Date()).getTime();
