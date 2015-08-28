@@ -34,6 +34,10 @@
 	 
 	var monitor;
 	var output;
+	var osc;
+	var metroGain;
+
+	var tooltips;
 		 
 
 	var Track = function() {
@@ -144,15 +148,21 @@
 			try { 
 				self.source = context.createBufferSource();
 				if(!imported) {
+					// This call takes 3ms-ish:
+					// This isn't at fault - I've reduced the audio quality multiple times and it makes no difference
 					self.recorder.getBuffer(function (buffers) {
 						self.source.buffer = context.createBuffer(1, buffers[0].length, 44100);
 						self.source.buffer.getChannelData(0).set(buffers[0]);
 						self.source.buffer.getChannelData(0).set(buffers[1]);
 						self.buffer = self.source.buffer;
-						self.source.start(0);
+						self.source.isPlaying = true;
+						self.source.onended = function() {
+							self.source.isPlaying = false;
+						}; // Wow, this is just hacky :P
 						//source.connect(output);
 						checkEffect();
-					});	
+					});
+					self.source.start(0);
 					imported = true;
 				} else {
 					self.source.buffer = self.buffer;
@@ -211,8 +221,8 @@
 				case(STATE_PLAY):
 					stopTrack = false;
 					self.view.classList.add(STATE_PLAY);
-			
 					// Code to play
+					self.recorder.stop();
 					break;
 
 				case(STATE_STOPPED):
@@ -252,6 +262,7 @@
 		function eventRecord(e) {  
 			e.preventDefault();
 			if(!isPlaying) {
+				// Start it playing! Yay!
 				isPlaying = true
 				beatPos = 1;
 				current16thNote = 0;
@@ -545,8 +556,8 @@
 		li.appendChild(au);
 		li.appendChild(hf);
 		var click = document.createEvent("Event");
-		 click.initEvent("click", true, true);
-		 hf.dispatchEvent(click);
+		click.initEvent("click", true, true);
+		hf.dispatchEvent(click);
 		//recordingslist.appendChild(li);
 
    
@@ -576,8 +587,8 @@
 		if ( (beatNumber%4))
 			return; // we're not playing non-8th 16th notes
 	   
-		var osc = context.createOscillator();
-		var metroGain = context.createGain();
+		osc = context.createOscillator();
+		metroGain = context.createGain();
 		osc.connect(metroGain);
 		metroGain.gain.value = metroVol;
 		metroGain.connect( output );
@@ -619,8 +630,10 @@
 			// Reset the animations properly
 			for(var i=0;i<tracks.length;i++) {
 				try {
-					tracks[i].resetAllAnimations();
-					tracks[i].registerBeat(0);
+					if(tracks[i].state != STATE_REC) {
+						tracks[i].resetAllAnimations();
+						tracks[i].registerBeat(0);
+					}
 				} catch(e) {
 					// Nothing, this just makes sure there aren't any problems...
 				}
@@ -644,9 +657,26 @@
 		}
 	}
 	
-	 
-	 
 	
+	var help = document.getElementById("help");
+	var notshowing = true;
+	
+	help.addEventListener('click',function() {
+		if(notshowing) {
+			$("#play").qtip("show");
+			$("#metronome").qtip("show");
+			$("#rec").qtip("show");
+			$("#tempo-holder").qtip("show");
+			$(".track-rec-button").qtip("show");
+		} else {
+			$("#play").qtip("hide");
+			$("#metronome").qtip("hide");
+			$("#rec").qtip("hide");
+			$("#tempo-holder").qtip("hide");
+			$(".track-rec-button").qtip("hide");
+		}
+		notshowing = !notshowing;
+	});
 	
 	var tempo = document.getElementById('tempo-slider'),
 	tempoLabel = document.getElementById('tempo-value');
@@ -815,7 +845,73 @@
 		output = context.createGain();
 		output.gain.value = 0.8;
 		output.connect(context.destination);
+
+		// Helpful tips! :D
+		$("#play").qtip({
+			content: "Click this to play or stop the track.",
+			style: {
+				classes: "qtip-bootstrap"
+			},
+			position: {
+				my: "top right",
+				at: "bottom left"
+			},
+			show: {
+				event: ""
+			}
+		});
 		
+		$("#metronome").qtip({
+			content: "This blinks with the tempo of your track. Click it to stop/start the ticking.",
+			style: {
+				classes: "qtip-bootstrap"
+			},
+			position: {
+				target: $("#metronome")
+			},
+			show: {
+				event: ""
+			}
+		});
+
+		$("#rec").qtip({
+			content: "Click this to live record your track!",
+			style: {
+				classes: "qtip-bootstrap"
+			},
+			show: {
+				event: ""
+			}
+		});
+
+		$("#tempo-holder").qtip({
+			content: "Click this in time or use the slider to change the tempo!",
+			style: {
+				classes: "qtip-bootstrap"
+			},
+			position: {
+				my: "center right",
+				at: "center left"
+			},
+			show: {
+				event: ""
+			}
+		});
+
+		$(".track-rec-button").qtip({
+			content: "Click this to record a track! It will count you in before it starts recording.",
+			style: {
+				classes: "qtip-bootstrap"
+			},
+			position: {
+				my: "top center",
+				at: "bottom center"
+			},
+			show: {
+				event: ""
+			}
+		});
+
 		timerWorker = new Worker("js/metronomeworker.js");
 
 		timerWorker.onmessage = function(e) {
